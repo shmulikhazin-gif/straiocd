@@ -86,7 +86,6 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Google Translate Styling */
     #google_translate_element {
       display: inline-block;
     }
@@ -403,7 +402,7 @@
 
   <!-- Basin Data and Script -->
   <script>
-    const yearsStandard = Array.from({length: 50}, (_, i) => 1977 + i); // 1977-2026
+    const yearsStandard = Array.from({length: 50}, (_, i) => 1977 + i);
     const yearsAsia = [
       "1976-1977","1977-1978","1978-1979","1979-1980","1980-1981","1981-1982","1982-1983","1983-1984","1984-1985","1985-1986",
       "1986-1987","1987-1988","1988-1989","1989-1990","1990-1991","1991-1992","1992-1993","1993-1994","1994-1995","1995-1996",
@@ -412,7 +411,6 @@
       "2016-2017","2017-2018","2018-2019","2019-2020","2020-2021","2021-2022","2022-2023","2023-2024","2024-2025","2025-2026"
     ];
 
-    // RAW OBSERVATION DATA EXTRACTED DIRECTLY FROM MEASUREMENT CHARTS
     const rawData = {
       atlantic: {
         title: "STRAIOCD INDEX: Atlantic Basin True Historical Trend",
@@ -452,7 +450,6 @@
       }
     };
 
-    // Calculate statistical metrics for array
     function calcStats(arr) {
       const n = arr.length;
       const mean = arr.reduce((a, b) => a + b, 0) / n;
@@ -467,7 +464,6 @@
       };
     }
 
-    // Chart Setup
     const ctx = document.getElementById('mainChart').getContext('2d');
     let currentBasinKey = 'atlantic';
     let chartInstance = new Chart(ctx, {
@@ -504,12 +500,10 @@
       }
     });
 
-    // Update View Function
     function updateBasinView(key) {
       const basin = rawData[key];
       currentBasinKey = key;
 
-      // Update Chart
       chartInstance.data.labels = basin.years;
       chartInstance.data.datasets[0].data = basin.data;
       chartInstance.data.datasets[0].borderColor = basin.color;
@@ -517,7 +511,6 @@
       chartInstance.data.datasets[0].pointBackgroundColor = basin.color;
       chartInstance.update();
 
-      // Update Titles & Stats
       document.getElementById('chartTitle').innerText = basin.title;
       const stats = calcStats(basin.data);
       document.getElementById('statMean').innerText = stats.mean;
@@ -526,7 +519,6 @@
       document.getElementById('statStd').innerText = stats.std;
     }
 
-    // Event Listeners for Selector
     document.querySelectorAll('.basin-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('.basin-btn').forEach(b => b.classList.remove('active'));
@@ -535,7 +527,6 @@
       });
     });
 
-    // Initialize Initial View
     updateBasinView('atlantic');
   </script>
 </body>
