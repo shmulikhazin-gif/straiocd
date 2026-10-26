@@ -11,7 +11,7 @@
   <style>
     :root {
       --bg-main: #060913;
-      --bg-card: rgba(15, 23, 42, 0.75);
+      --bg-card: rgba(15, 23, 42, 0.85);
       --bg-card-border: rgba(56, 189, 248, 0.2);
       --accent-cyan: #38bdf8;
       --accent-blue: #3b82f6;
@@ -47,7 +47,7 @@
       top: 0;
       z-index: 100;
       backdrop-filter: blur(12px);
-      background: rgba(6, 9, 19, 0.88);
+      background: rgba(6, 9, 19, 0.95);
       border-bottom: 1px solid var(--bg-card-border);
       padding: 1rem 2rem;
       display: flex;
@@ -88,6 +88,7 @@
 
     #google_translate_element {
       display: inline-block;
+      min-height: 38px;
     }
     .goog-te-combo {
       background-color: rgba(15, 23, 42, 0.9) !important;
@@ -278,4 +279,292 @@
       margin: 0 auto;
       padding: 1.5rem;
       background: rgba(15, 23, 42, 0.5);
-      border: 1px solid rgba(56, 189
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .credit-title {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+    }
+
+    .credit-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+    }
+
+    .credit-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .credit-links a:hover {
+      color: var(--accent-cyan);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">STR</div>
+      <div class="brand-title">STRAIOCD MODEL</div>
+    </div>
+    <div id="google_translate_element"></div>
+  </header>
+
+  <main>
+    <section class="hero-card">
+      <h1 class="hero-title">מדד שבירות פולאריות (Polar Breakup Index) - ניתוח גלובלי ואגני</h1>
+      <p class="hero-subtitle">
+        הצגת נתוני תצפית ולוויין קשיחים בלבד של מדד שבירות פולאריות ברמות הסטרטוספריות (10-30mb). הדף כולל חישוב גלובלי משוכלל של סך האנרגיה מכל ששת האגנים לצד ניתוח מפורט לפי אגנים נפרדים.
+      </p>
+      <div class="badge-container">
+        <div class="badge">GLOBAL COMBINED INDEX</div>
+        <div class="badge">SATELLITE & SONDE RAW DATA</div>
+        <div class="badge">6 BASINS INTEGRATION</div>
+        <div class="badge">HISTORICAL ARCHIVE 1977-2026</div>
+      </div>
+    </section>
+
+    <!-- Global Combined Chart Section -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title">מדד שבירות פולאריות גלובלי (סך אנרגיה כלל-עולמית משוכללת מכל 6 האגנים)</h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">ממוצע סה"כ גלובלי</span>
+          <span class="stat-value" id="globalStatMean">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">שיא סה"כ גלובלי (Max)</span>
+          <span class="stat-value" id="globalStatMax">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">מינימום סה"כ גלובלי (Min)</span>
+          <span class="stat-value" id="globalStatMin">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">ממוצע גלובלי לאגן</span>
+          <span class="stat-value" id="globalStatAvgPerBasin">--</span>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="globalChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Basin Specific Section Header -->
+    <div class="hero-card" style="padding: 1.5rem; background: rgba(15, 23, 42, 0.5);">
+      <h2 style="font-size: 1.6rem; color: var(--accent-cyan);">פירוט מדד שבירות פולאריות לפי אגנים פרטניים</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">בחר אגן ספציפי מהרשימה להלן לצפייה בגרף ובסטטיסטיקה של אותו אגן.</p>
+    </div>
+
+    <!-- Basin Selector -->
+    <div class="basin-selector">
+      <button class="basin-btn active" data-basin="atlantic">אגן האטלנטי</button>
+      <button class="basin-btn" data-basin="west_pacific">מערב הפיסיפי</button>
+      <button class="basin-btn" data-basin="east_pacific">מזרח הפיסיפי</button>
+      <button class="basin-btn" data-basin="south_indian">דרום אוקיינוס הודי</button>
+      <button class="basin-btn" data-basin="north_indian">צפון אוקיינוס הודי</button>
+      <button class="basin-btn" data-basin="asia">אגן אסיה</button>
+    </div>
+
+    <!-- Basin Statistical Overview -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">ממוצע מדד שבירות פולאריות באגן</span>
+        <span class="stat-value" id="statMean">--</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">ערך שיא באגן (Max)</span>
+        <span class="stat-value" id="statMax">--</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">ערך מינימום באגן (Min)</span>
+        <span class="stat-value" id="statMin">--</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">סטיית תקן באגן (SD)</span>
+        <span class="stat-value" id="statStd">--</span>
+      </div>
+    </div>
+
+    <!-- Main Dynamic Basin Chart -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title" id="chartTitle">מדד שבירות פולאריות - אגן האטלנטי</h2>
+      </div>
+      <div class="chart-container">
+        <canvas id="mainChart"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="credit-box">
+      <div class="credit-title">CREDIT: S-AIOCD MODEL</div>
+      <div class="credit-links">
+        <div><strong>DOI:</strong> <a href="https://doi.org/10.5281/zenodo.18615544" target="_blank">10.5281/zenodo.18615544</a></div>
+        <div><strong>ORCID:</strong> <a href="https://orcid.org/0009-0001-7932-3675" target="_blank">0009-0001-7932-3675</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Google Translate Initialization -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      try {
+        new google.translate.TranslateElement({
+          pageLanguage: 'he',
+          includedLanguages: 'en,ru,es,fr,de,ar,zh-CN,ja,it,pt',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      } catch(e) {}
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
+
+  <!-- Application Logic -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const yearsStandard = Array.from({length: 50}, (_, i) => 1977 + i);
+
+      const rawData = {
+        atlantic: {
+          title: "מדד שבירות פולאריות באטלנטי - STRAIOCD INDEX: Atlantic Basin True Historical Trend",
+          color: "#1f77b4",
+          years: yearsStandard,
+          data: [109,97,99,189,83,133,87,99,187,87,109,101,177,119,119,95,97,121,107,113,99,97,173,103,111,121,137,111,149,97,129,99,99,169,99,107,109,103,109,99,89,169,111,107,171,105,97,123,105,103]
+        },
+        west_pacific: {
+          title: "מדד שבירות פולאריות במערב פיסיפי - STRAIOCD INDEX: West Pacific Basin True Historical Trend",
+          color: "#ff7f0e",
+          years: yearsStandard,
+          data: [193,185,182,165,181,177,195,175,185,210,171,161,173,153,163,157,157,161,165,167,181,183,167,189,173,175,153,195,173,167,179,171,151,201,151,179,173,179,147,183,153,183,163,191,163,171,155,187,171,165]
+        },
+        east_pacific: {
+          title: "מדד שבירות פולאריות במזרח פיסיפי - STRAIOCD INDEX: East Pacific Basin True Historical Trend",
+          color: "#2ca02c",
+          years: yearsStandard,
+          data: [127,129,121,113,107,129,137,109,123,115,133,117,129,111,119,125,111,135,127,115,137,129,123,129,119,113,125,135,139,133,137,101,113,151,145,123,135,121,107,113,117,121,121,109,119,123,109,123,118,112]
+        },
+        south_indian: {
+          title: "מדד שבירות פולאריות בדרום אוקיינוס הודי - STRAIOCD INDEX: South Indian Basin SH True Historical Trend",
+          color: "#8c564b",
+          years: yearsStandard,
+          data: [149,163,137,143,163,153,155,147,145,147,159,159,113,159,147,131,151,131,151,141,145,139,149,141,157,161,159,171,145,137,137,168,141,157,147,151,143,141,143,141,153,141,153,151,125,143,157,147,155,149]
+        },
+        north_indian: {
+          title: "מדד שבירות פולאריות בצפון אוקיינוס הודי - STRAIOCD INDEX: North Indian Basin True Historical Trend",
+          color: "#9467bd",
+          years: yearsStandard,
+          data: [109,130,101,95,97,105,113,101,109,111,113,87,91,105,97,109,101,85,107,99,101,97,109,91,95,121,121,83,101,128,105,101,107,99,101,105,109,101,99,93,109,109,99,87,87,81,99,99,93,89]
+        },
+        asia: {
+          title: "מדד שבירות פולאריות באסיה - Historical STRAIOCD Index Trend for Asia (Last 50 Years)",
+          color: "#b22222",
+          years: yearsStandard,
+          data: [341,319,335,291,315,365,349,317,341,339,325,319,319,327,331,369,343,319,333,353,329,311,315,329,349,353,331,329,335,329,331,351,327,329,307,323,311,311,341,311,349,361,343,347,341,297,323,305,335,339]
+        }
+      };
+
+      const globalSumSeries = yearsStandard.map((_, i) => {
+        return (rawData.atlantic.data[i] || 0) +
+               (rawData.west_pacific.data[i] || 0) +
+               (rawData.east_pacific.data[i] || 0) +
+               (rawData.south_indian.data[i] || 0) +
+               (rawData.north_indian.data[i] || 0) +
+               (rawData.asia.data[i] || 0);
+      });
+
+      function calcStats(arr) {
+        const n = arr.length;
+        const mean = arr.reduce((a, b) => a + b, 0) / n;
+        const max = Math.max(...arr);
+        const min = Math.min(...arr);
+        const std = Math.sqrt(arr.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / n);
+        return {
+          mean: mean.toFixed(2),
+          max: max.toFixed(1),
+          min: min.toFixed(1),
+          std: std.toFixed(2)
+        };
+      }
+
+      const globalStats = calcStats(globalSumSeries);
+      document.getElementById('globalStatMean').innerText = globalStats.mean;
+      document.getElementById('globalStatMax').innerText = globalStats.max;
+      document.getElementById('globalStatMin').innerText = globalStats.min;
+      document.getElementById('globalStatAvgPerBasin').innerText = (globalStats.mean / 6).toFixed(2);
+
+      if (typeof Chart !== 'undefined') {
+        const globalCtx = document.getElementById('globalChart').getContext('2d');
+        new Chart(globalCtx, {
+          type: 'line',
+          data: {
+            labels: yearsStandard,
+            datasets: [{
+              label: 'סה"כ מדד שבירות פולאריות גלובלי (6 אגנים)',
+              data: globalSumSeries,
+              borderColor: '#38bdf8',
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              borderWidth: 2.5,
+              pointRadius: 4,
+              pointBackgroundColor: '#38bdf8',
+              fill: true,
+              tension: 0.15
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: '#f8fafc', font: { family: 'JetBrains Mono' } } }
+            },
+            scales: {
+              x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+              y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+            }
+          }
+        });
+
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        let chartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: rawData.atlantic.years,
+            datasets: [{
+              label: 'מדד שבירות פולאריות (Polar Breakup Units)',
+              data: rawData.atlantic.data,
+              borderColor: rawData.atlantic.color,
+              backgroundColor: rawData.atlantic.color + '22',
+              borderWidth: 2,
+              pointRadius: 3.5,
+              pointBackgroundColor: rawData.atlantic.color,
+              fill: true,
+              tension: 0.1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: '#f8fafc', font: { family: 'JetBrains Mono' } } }
+            },
+            scales: {
+              x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+              y: { ticks: { color: '#94a3b
