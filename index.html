@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>מדד שבירות פולאריות (Polar Breakup Index) | STRAIOCD Model</title>
+  <title>מדד שבירות פולאריות גלובלי | STRAIOCD Model</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -18,6 +18,7 @@
       --accent-blue: #3b82f6;
       --accent-violet: #8b5cf6;
       --accent-amber: #f59e0b;
+      --accent-emerald: #10b981;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --font-sans: 'Assistant', sans-serif;
@@ -228,3 +229,202 @@
     }
 
     .stat-value {
+      font-size: 1.6rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.75rem;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 420px;
+      width: 100%;
+    }
+
+    footer {
+      margin-top: 3rem;
+      background: rgba(3, 6, 13, 0.95);
+      border-top: 1px solid var(--bg-card-border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .credit-box {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .credit-title {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+    }
+
+    .credit-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+    }
+
+    .credit-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .credit-links a:hover {
+      color: var(--accent-cyan);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">STR</div>
+      <div class="brand-title">STRAIOCD MODEL</div>
+    </div>
+    <div id="google_translate_element"></div>
+  </header>
+
+  <main>
+    <section class="hero-card">
+      <h1 class="hero-title">מדד שבירות פולאריות (Polar Breakup Index) - ניתוח גלובלי ואגני</h1>
+      <p class="hero-subtitle">
+        הצגת נתוני תצפית ולוויין קשיחים בלבד של מדד שבירות פולאריות ברמות הסטרטוספריות (10-30mb). הדף כולל חישוב גלובלי משוכלל של סך האנרגיה מכל ששת האגנים לצד ניתוח מפורט לפי אגנים נפרדים.
+      </p>
+      <div class="badge-container">
+        <div class="badge">GLOBAL COMBINED INDEX</div>
+        <div class="badge">SATELLITE & SONDE RAW DATA</div>
+        <div class="badge">6 BASINS INTEGRATION</div>
+        <div class="badge">HISTORICAL ARCHIVE 1977-2026</div>
+      </div>
+    </section>
+
+    <!-- Global Combined Chart Section -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title">מדד שבירות פולאריות גלובלי (סך אנרגיה כלל-עולמית משוכללת מכל 6 האגנים)</h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">ממוצע סה"כ גלובלי</span>
+          <span class="stat-value" id="globalStatMean">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">שיא סה"כ גלובלי (Max)</span>
+          <span class="stat-value" id="globalStatMax">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">מינימום סה"כ גלובלי (Min)</span>
+          <span class="stat-value" id="globalStatMin">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">ממוצע גלובלי לאגן</span>
+          <span class="stat-value" id="globalStatAvgPerBasin">--</span>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="globalChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Basin Specific Section Header -->
+    <div class="hero-card" style="padding: 1.5rem; background: rgba(15, 23, 42, 0.5);">
+      <h2 style="font-size: 1.6rem; color: var(--accent-cyan);">פירוט מדד שבירות פולאריות לפי אגנים פרטניים</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">בחר אגן ספציפי מהרשימה להלן לצפייה בגרף ובסטטיסטיקה של אותו אגן.</p>
+    </div>
+
+    <!-- Basin Selector -->
+    <div class="basin-selector">
+      <button class="basin-btn active" data-basin="atlantic">אגן האטלנטי</button>
+      <button class="basin-btn" data-basin="west_pacific">מערב הפיסיפי</button>
+      <button class="basin-btn" data-basin="east_pacific">מזרח הפיסיפי</button>
+      <button class="basin-btn" data-basin="south_indian">דרום אוקיינוס הודי</button>
+      <button class="basin-btn" data-basin="north_indian">צפון אוקיינוס הודי</button>
+      <button class="basin-btn" data-basin="asia">אגן אסיה</button>
+    </div>
+
+    <!-- Basin Statistical Overview -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">ממוצע מדד שבירות פולאריות באגן</span>
+        <span class="stat-value" id="statMean">--</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">ערך שיא באגן (Max)</span>
+        <span class="stat-value" id="statMax">--</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">ערך מינימום באגן (Min)</span>
+        <span class="stat-value" id="statMin">--</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">סטיית תקן באגן (SD)</span>
+        <span class="stat-value" id="statStd">--</span>
+      </div>
+    </div>
+
+    <!-- Main Dynamic Basin Chart -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title" id="chartTitle">מדד שבירות פולאריות - אגן האטלנטי</h2>
+      </div>
+      <div class="chart-container">
+        <canvas id="mainChart"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="credit-box">
+      <div class="credit-title">CREDIT: S-AIOCD MODEL</div>
+      <div class="credit-links">
+        <div><strong>DOI:</strong> <a href="https://doi.org/10.5281/zenodo.18615544" target="_blank">10.5281/zenodo.18615544</a></div>
+        <div><strong>ORCID:</strong> <a href="https://orcid.org/0009-0001-7932-3675" target="_blank">0009-0001-7932-3675</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Google Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
